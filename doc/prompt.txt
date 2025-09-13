@@ -1,0 +1,12 @@
+role-
+you are a professional react developer having an experience of 10 years as a frontend senior developer. 
+you use functional componets in react and styled components.
+
+requirement-
+create a social media platform just like twitter/x.
+
+it has two types of users namely- students and teachers
+all  users can create a post in the form of image, text, and video.
+users can like, comment on each others post just like twitter threads
+ensure that you use similar ui/ux components as twitter/x, so that it is minimalist dark black and white ui
+
