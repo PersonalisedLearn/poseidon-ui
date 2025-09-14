@@ -1,5 +1,6 @@
 import { Heart, MessageCircle, Share, MoreHorizontal } from 'lucide-react';
 import { API_BASE_URL } from '../config';
+import { getAvatarUrl } from '../services/avatarService';
 
 const Post = ({ post, currentUser, onLike }) => {
   console.log('Post component rendered with post:', post);
@@ -23,35 +24,7 @@ const Post = ({ post, currentUser, onLike }) => {
     }).format(date);
   };
 
-  // Generate avatar URL with cat or dog based on username hash
-  const getAvatarUrl = (username, name) => {
-    const seed = username || name || 'anonymous';
-    const baseUrl = 'https://api.dicebear.com/7.x';
-    
-    try {
-      // Simple hash to determine if we use cat or dog
-      const hash = seed.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const isCat = hash % 2 === 0;
-      
-      const params = new URLSearchParams({
-        seed: seed,
-        size: 100,
-        radius: 25,
-        flip: 'true',
-        rotate: '0,360',
-        // Use different animal types from miniavs
-        animal: isCat ? 'cat' : 'dog',
-        animalColor: isCat ? '0a5b83' : 'ad3f32',
-        backgroundType: 'gradientLinear',
-        backgroundColor: isCat ? 'b6e3f4,c0aede' : 'ffd5dc,ffdfbf'
-      });
-      
-      return `${baseUrl}/miniavs/svg?${params.toString()}`;
-    } catch (error) {
-      console.error('Error generating avatar URL:', error);
-      return `${baseUrl}/bottts/svg?seed=error&style=circle&backgroundColor=b6e3f4`;
-    }
-  };
+  // Use the avatar service for avatar generation
 
   // Safely handle user data with defaults
   const user = {
@@ -67,7 +40,7 @@ const Post = ({ post, currentUser, onLike }) => {
   
   // Generate avatar URL if not provided
   if (!user.avatar) {
-    user.avatar = getAvatarUrl(user.username, user.name, user.gender);
+    user.avatar = getAvatarUrl(user.username, user.name);
   }
 
   return (

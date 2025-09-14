@@ -1,6 +1,7 @@
 import { Search, LogOut, User } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { getUserAvatar } from '../services/avatarService';
 
 const Header = () => {
   const { user, logout } = useUser();
@@ -26,9 +27,22 @@ const Header = () => {
         {user && (
           <div className="user-section">
             <div className="user-info">
-              <div className="user-avatar">
-                <User size={16} className="text-white" />
-              </div>
+              <img 
+                src={getUserAvatar({
+                  username: user.username,
+                  name: user.name,
+                  gender: user.gender,
+                  avatar: user.avatar,
+                  firstName: user.firstName
+                })}
+                alt={user.name || user.username}
+                className="user-avatar"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  // Fallback to a default avatar if there's an error
+                  e.target.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=user&backgroundColor=b6e3f4&radius=25';
+                }}
+              />
               <span className="username">{user.name || user.username}</span>
             </div>
             <button

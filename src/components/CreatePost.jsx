@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { X, Image, Video, Smile } from 'lucide-react';
 import EmojiPicker from 'emoji-picker-react';
 import { useUser } from '../context/UserContext';
+import { getUserAvatar } from '../services/avatarService';
 
 const CreatePost = ({ onAddPost, onClose }) => {
   const { user: currentUser } = useUser();
@@ -88,9 +89,13 @@ const CreatePost = ({ onAddPost, onClose }) => {
         <form onSubmit={handleSubmit} className="create-post-form">
           <div className="post-input-area">
             <img 
-              src={currentUser?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'U')}&background=random`} 
+              src={getUserAvatar(currentUser)} 
               alt={currentUser?.name || 'User'} 
-              className="create-post-avatar" 
+              className="create-post-avatar"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = getUserAvatar({ username: currentUser?.username, name: currentUser?.name });
+              }}
             />
             <div className="post-textarea-container">
               <textarea

@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Link as LinkIcon, Edit } from 'lucide-react';
 import axios from 'axios';
 import Post from './Post';
 import { API_BASE_URL } from '../config';
+import { useUser } from '../context/UserContext';
+import { getUserAvatar } from '../services/avatarService';
 
 const Profile = () => {
-  const { username } = useParams();
+  const { user: currentUser } = useUser();
+  const navigate = useNavigate();
   
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -14,11 +17,7 @@ const Profile = () => {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('posts');
   
-  // Generate a consistent avatar based on username
-  const getAvatarUrl = (username) => {
-    const seed = username || 'default';
-    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seed)}`;
-  };
+  // Use the avatar service for avatar generation
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,13 +25,20 @@ const Profile = () => {
         setIsLoading(true);
         setError('');
         
-        // Fetch user data
-        const userResponse = await axios.get(`${API_BASE_URL}/users/username/${username || 'demo'}`);
+        if (!currentUser) {
+          navigate('/login');
+          return;
+        }
+        
+        // Fetch user data using the username
+        const userResponse = await axios.get(`${API_BASE_URL}/users/username/${currentUser.username}`);
         setUser(userResponse.data);
         
-        // Fetch user's posts
-        const postsResponse = await axios.get(`${API_BASE_URL}/posts/user/${userResponse.data.id}`);
-        setPosts(postsResponse.data || []);
+        // Fetch all posts and filter by current user
+        const postsResponse = await axios.get(`${API_BASE_URL}/posts`);
+        // Filter posts by the current user's username
+        const userPosts = postsResponse.data.filter(post => post.userName === currentUser.username);
+        setPosts(userPosts);
         
       } catch (err) {
         console.error('Error fetching profile data:', err);
@@ -43,7 +49,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [username]);
+  }, [currentUser, navigate]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -52,11 +58,28 @@ const Profile = () => {
   };
 
   if (isLoading) {
-    return <div className="loading">Loading profile...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="error">{error}</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-red-500">
+        <div className="text-center p-4">
+          <p className="text-xl font-bold mb-2">Error loading profile</p>
+          <p>{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {
@@ -73,12 +96,20 @@ const Profile = () => {
         <div className="profile-info">
           <div className="profile-avatar-section">
             <img 
-              src={user.avatar || getAvatarUrl(user.username || user.firstName)} 
+              src={getUserAvatar({
+                username: user.username,
+                name: `${user.firstName} ${user.lastName || ''}`,
+                gender: user.gender,
+                avatar: user.avatar,
+                firstName: user.firstName,
+                lastName: user.lastName
+              })} 
               alt={`${user.firstName} ${user.lastName || ''}`} 
               className="profile-avatar" 
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = getAvatarUrl(user.username || user.firstName);
+                // Fallback to a default avatar if there's an error
+                e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.firstName || 'user')}&backgroundColor=b6e3f4&radius=25`;
               }}
             />
           </div>
