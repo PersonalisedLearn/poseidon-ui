@@ -1,121 +1,128 @@
-import { useState } from 'react'
-import { X, Image, Video, Smile } from 'lucide-react'
+import { useState } from 'react';
+import { X, Image, Video, Smile } from 'lucide-react';
 
 const CreatePost = ({ currentUser, onAddPost, onClose }) => {
-  const [content, setContent] = useState('')
-  const [media, setMedia] = useState(null)
-  const [mediaType, setMediaType] = useState(null)
+  const [content, setContent] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (content.trim() || media) {
-      onAddPost({
-        content: content.trim(),
-        media: media ? { url: media, type: mediaType } : null
-      })
-      setContent('')
-      setMedia(null)
-      setMediaType(null)
-      onClose()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!content.trim()) {
+      setError('Post content cannot be empty');
+      return;
     }
-  }
 
-  const handleMediaUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setMedia(e.target.result)
-        setMediaType(file.type.startsWith('video') ? 'video' : 'image')
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      const success = await onAddPost(content);
+      if (success) {
+        setContent('');
+        onClose();
+      } else {
+        setError('Failed to create post. Please try again.');
       }
-      reader.readAsDataURL(file)
+    } catch (err) {
+      console.error('Error creating post:', err);
+      setError('An error occurred while creating the post');
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="create-post-modal">
       <div className="create-post-content">
         <div className="create-post-header">
           <h3>Create Post</h3>
-          <button onClick={onClose} className="close-btn">
+          <button 
+            type="button"
+            onClick={onClose} 
+            className="close-btn"
+            disabled={isSubmitting}
+          >
             <X size={24} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="create-post-form">
           <div className="post-input-area">
-            <img src={currentUser.avatar} alt={currentUser.name} className="create-post-avatar" />
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder={`What's happening, ${currentUser.name}?`}
-              className="post-textarea"
-              rows="4"
+            <img 
+              src={currentUser?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'U')}&background=random`} 
+              alt={currentUser?.name || 'User'} 
+              className="create-post-avatar" 
             />
-          </div>
-
-          {media && (
-            <div className="post-media-preview">
-              {mediaType === 'image' && (
-                <img src={media} alt="Preview" className="media-preview" />
-              )}
-              {mediaType === 'video' && (
-                <video src={media} controls className="media-preview" />
-              )}
-              <button 
-                type="button" 
-                onClick={() => setMedia(null)}
-                className="remove-media-btn"
-              >
-                <X size={16} />
-              </button>
+            <div className="post-textarea-container">
+              <textarea
+                value={content}
+                onChange={(e) => {
+                  setContent(e.target.value);
+                  if (error) setError('');
+                }}
+                placeholder="What's on your mind?"
+                className="post-textarea"
+                rows="4"
+                disabled={isSubmitting}
+              />
+              {error && <div className="error-message">{error}</div>}
             </div>
-          )}
+          </div>
 
           <div className="create-post-actions">
             <div className="media-options">
-              <label className="media-option">
+              <button 
+                type="button" 
+                className="media-option"
+                disabled={isSubmitting}
+                title="Coming soon"
+              >
                 <Image size={20} />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleMediaUpload}
-                  style={{ display: 'none' }}
-                />
-              </label>
+              </button>
               
-              <label className="media-option">
+              <button 
+                type="button" 
+                className="media-option"
+                disabled={isSubmitting}
+                title="Coming soon"
+              >
                 <Video size={20} />
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={handleMediaUpload}
-                  style={{ display: 'none' }}
-                />
-              </label>
+              </button>
               
-              <button type="button" className="media-option">
+              <button 
+                type="button" 
+                className="media-option"
+                disabled={isSubmitting}
+                title="Coming soon"
+              >
                 <Smile size={20} />
               </button>
             </div>
 
             <div className="submit-actions">
-              <button type="button" onClick={onClose} className="cancel-btn">
+              <button 
+                type="button" 
+                onClick={onClose} 
+                className="cancel-btn"
+                disabled={isSubmitting}
+              >
                 Cancel
               </button>
               <button 
                 type="submit" 
-                className="submit-btn"
-                disabled={!content.trim() && !media}
+                className={`post-submit-btn ${(!content.trim() || isSubmitting) ? 'disabled' : ''}`}
+                disabled={!content.trim() || isSubmitting}
               >
-                Post
+                {isSubmitting ? 'Posting...' : 'Post'}
               </button>
             </div>
           </div>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreatePost
+export default CreatePost;

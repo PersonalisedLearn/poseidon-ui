@@ -1,27 +1,54 @@
-import { Heart, MessageCircle, Share, MoreHorizontal } from 'lucide-react'
+import { Heart, MessageCircle, Share, MoreHorizontal } from 'lucide-react';
 
 const Post = ({ post, currentUser, onLike }) => {
   const handleLike = () => {
-    onLike(post.id)
-  }
+    onLike(post.id);
+  };
 
   const formatTimestamp = (timestamp) => {
-    return timestamp
-  }
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
+
+  // Generate avatar URL based on username or name
+  const getAvatarUrl = (username, name) => {
+    const seed = username || name || 'anonymous';
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seed)}`;
+  };
+
+  // Create a default user object if user data is not available
+  const user = post.user || {
+    name: 'Anonymous',
+    username: 'anonymous',
+    avatar: getAvatarUrl('anonymous', 'Anonymous')
+  };
 
   return (
     <div className="post">
       <div className="post-header">
         <div className="post-user">
-          <img src={post.user.avatar} alt={post.user.name} className="post-avatar" />
+          <img 
+            src={user.avatar || getAvatarUrl(user.username, user.name)} 
+            alt={user.name} 
+            className="post-avatar"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = getAvatarUrl(user.username, user.name);
+            }}
+          />
           <div className="post-user-info">
             <div className="post-user-name">
-              {post.user.name}
-              <span className="post-username">@{post.user.username}</span>
-              <span className="post-timestamp">· {formatTimestamp(post.timestamp)}</span>
-            </div>
-            <div className={`user-type-badge ${post.user.type}`}>
-              {post.user.type === 'student' ? '🎓 Student' : '👨‍🏫 Teacher'}
+              {user.name || 'Anonymous'}
+              {user.username && (
+                <span className="post-username">@{user.username}</span>
+              )}
+              <span className="post-timestamp">· {formatTimestamp(post.createdAt)}</span>
             </div>
           </div>
         </div>
@@ -32,32 +59,21 @@ const Post = ({ post, currentUser, onLike }) => {
 
       <div className="post-content">
         <p>{post.content}</p>
-        {post.media && (
-          <div className="post-media">
-            {post.media.type === 'image' && (
-              <img src={post.media.url} alt="Post media" className="post-image" />
-            )}
-            {post.media.type === 'video' && (
-              <video controls className="post-video">
-                <source src={post.media.url} type="video/mp4" />
-              </video>
-            )}
-          </div>
-        )}
+        {/* Media support can be added later when the API supports it */}
       </div>
 
       <div className="post-actions">
         <button 
-          className={`action-btn like-btn ${post.isLiked ? 'liked' : ''}`}
+          className={`action-btn like-btn ${post.likedByCurrentUser ? 'liked' : ''}`}
           onClick={handleLike}
         >
-          <Heart size={20} fill={post.isLiked ? 'currentColor' : 'none'} />
-          <span>{post.likes}</span>
+          <Heart size={20} fill={post.likedByCurrentUser ? 'currentColor' : 'none'} />
+          <span>{post.likesCount || 0}</span>
         </button>
         
         <button className="action-btn comment-btn">
           <MessageCircle size={20} />
-          <span>{post.comments}</span>
+          <span>{post.commentsCount || 0}</span>
         </button>
         
         <button className="action-btn share-btn">
@@ -65,7 +81,7 @@ const Post = ({ post, currentUser, onLike }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;
