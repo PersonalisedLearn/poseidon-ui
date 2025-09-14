@@ -40,20 +40,9 @@ api.interceptors.response.use(
 
 export const userService = {
   // Check if username is available
-  // 404 means username is available (not found), 200 means username exists
   checkUsername: async (username) => {
-    try {
-      // If we get a 200, username exists
-      await api.get(`/users/username/${username}`);
-      return { available: false };
-    } catch (error) {
-      // 404 means username is available
-      if (error.response?.status === 404) {
-        return { available: true };
-      }
-      // For any other error, rethrow
-      throw error;
-    }
+    const response = await api.get(`/users/check-username/${username}`);
+    return response.data; // { available: true/false }
   },
 
   // Get user by username

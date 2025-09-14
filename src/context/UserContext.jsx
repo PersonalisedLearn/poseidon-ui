@@ -41,15 +41,7 @@ export const UserProvider = ({ children }) => {
 
   // Check if username is available
   const checkUsername = async (username) => {
-    try {
-      const response = await userService.checkUsername(username);
-      return { available: true };
-    } catch (error) {
-      if (error.response && error.response.status === 409) {
-        return { available: false };
-      }
-      throw error;
-    }
+    return await userService.checkUsername(username);
   };
 
   // Register new user
