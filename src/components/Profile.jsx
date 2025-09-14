@@ -35,9 +35,24 @@ const Profile = () => {
         setUser(userResponse.data);
         
         // Fetch all posts and filter by current user
+        console.log('Fetching posts for user:', currentUser);
         const postsResponse = await axios.get(`${API_BASE_URL}/posts`);
-        // Filter posts by the current user's username
-        const userPosts = postsResponse.data.filter(post => post.userName === currentUser.username);
+        console.log('All posts:', postsResponse.data);
+        
+        // Filter posts by the current user's username or userId
+        const userPosts = postsResponse.data.filter(post => {
+          const matchesUsername = post.user?.username === currentUser.username;
+          const matchesUserId = post.userId === currentUser.id || post.user?.id === currentUser.id;
+          console.log(`Post ${post.id}:`, { 
+            postUsername: post.user?.username, 
+            currentUsername: currentUser.username,
+            matchesUsername,
+            matchesUserId
+          });
+          return matchesUsername || matchesUserId;
+        });
+        
+        console.log('Filtered user posts:', userPosts);
         setPosts(userPosts);
         
       } catch (err) {
