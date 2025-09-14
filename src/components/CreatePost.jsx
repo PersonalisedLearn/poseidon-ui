@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Image, Video, Smile } from 'lucide-react';
 import EmojiPicker from 'emoji-picker-react';
+import { useUser } from '../context/UserContext';
 
-const CreatePost = ({ currentUser, onAddPost, onClose }) => {
+const CreatePost = ({ onAddPost, onClose }) => {
+  const { user: currentUser } = useUser();
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');

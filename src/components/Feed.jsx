@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from '../context/UserContext';
 import Post from './Post';
 import CreatePost from './CreatePost';
 import { API_BASE_URL } from '../config';
 
-const Feed = ({ currentUser }) => {
+const Feed = () => {
+  const { user: currentUser } = useUser();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,10 +30,17 @@ const Feed = ({ currentUser }) => {
 
   // Handle post creation
   const handleAddPost = async (content) => {
+    if (!currentUser?.username) {
+      console.error('No username available for the current user');
+      return false;
+    }
+
     try {
       const newPost = {
         content,
-        userId: currentUser?.id || 'anonymous',
+        userName: currentUser.username,
+        // Include media if needed
+        media: null
       };
       
       await axios.post(`${API_BASE_URL}/posts`, newPost);
@@ -82,7 +91,6 @@ const Feed = ({ currentUser }) => {
 
       {showCreatePost && (
         <CreatePost 
-          currentUser={currentUser}
           onAddPost={handleAddPost}
           onClose={() => setShowCreatePost(false)}
         />
