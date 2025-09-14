@@ -24,3 +24,14 @@ If there is no such user then align with API and handle the error and show a toa
 if user choose to create a new username then
 user will enter the user name and currently in API we have one endpoint to create user 
 and it returns duplicate username error as well so handle that in UI, align with API and handle the error and show a toast message to user.
+
+
+Lets focus on settings
+The settings is non-functional component right now.
+I want to build it.
+It will have user's declaration that he/she wants to permanently delete account.
+There will be a delete account button.
+They will enter the text "delete account" to confirm the deletion.
+The theme should align with the UI of poseidon.
+The delete button will be of red colour.
+Do not integrate it will API yet, just focus on UI.

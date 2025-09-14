@@ -72,6 +72,23 @@ export const userService = {
       throw new Error(error.response?.data?.message || 'Failed to create user');
     }
   },
+
+  // Delete user account
+  deleteUser: async (userId) => {
+    try {
+      const response = await api.delete(`/users/${userId}`);
+      // Clear user data from local storage on successful deletion
+      localStorage.removeItem('user');
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        throw new Error('Unauthorized - Please log in again');
+      } else if (error.response?.status === 404) {
+        throw new Error('User not found');
+      }
+      throw new Error(error.response?.data?.message || 'Failed to delete account');
+    }
+  },
 };
 
 export default api;

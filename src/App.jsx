@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Feed from './components/Feed';
 import Profile from './components/Profile';
+import Settings from './components/Settings';
 import LoginOverlay from './components/LoginOverlay';
 import './App.css';
 
@@ -65,6 +66,14 @@ const AppContent = () => {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               }
             />
