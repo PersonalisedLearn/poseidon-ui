@@ -10,3 +10,17 @@ all  users can create a post in the form of image, text, and video.
 users can like, comment on each others post just like twitter threads
 ensure that you use similar ui/ux components as twitter/x, so that it is minimalist dark black and white ui
 
+
+
+I want to start small, so UI will have user details in local storage.
+if there is no used data in storage then a overlay will popup.
+Only keep necessary information in localstorage for user
+User has 2 option either to use existing username or create a new one.
+if user choose to use existing username then
+user will enter the user name and currently in API we have one endpoint to get user by username
+Now, if the id exists then user will be logged in and UI will use that user details.
+If there is no such user then align with API and handle the error and show a toast message to user.
+
+if user choose to create a new username then
+user will enter the user name and currently in API we have one endpoint to create user 
+and it returns duplicate username error as well so handle that in UI, align with API and handle the error and show a toast message to user.
