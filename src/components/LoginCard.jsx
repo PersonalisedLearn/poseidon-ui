@@ -21,7 +21,7 @@ export const LoginCard = styled.div`
 
 export const PoseidonIcon = () => (
   <img 
-    src="/src/assets/poseidonIcon.png" 
+    src="/assets/poseidonIcon.png" 
     alt="Poseidon Logo" 
     style={{
       width: '100%',
