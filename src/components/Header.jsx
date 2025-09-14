@@ -24,16 +24,16 @@ const Header = () => {
         </div>
         
         {user && (
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="user-section">
+            <div className="user-info">
+              <div className="user-avatar">
                 <User size={16} className="text-white" />
               </div>
-              <span className="text-white text-sm font-medium">{user.username}</span>
+              <span className="username">{user.name || user.username}</span>
             </div>
             <button
               onClick={handleLogout}
-              className="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition-colors"
+              className="logout-button"
               title="Logout"
             >
               <LogOut size={18} />

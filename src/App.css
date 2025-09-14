@@ -464,6 +464,52 @@ body {
   gap: 16px;
 }
 
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.username {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.logout-button {
+  color: #94a3b8;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  color: white;
+  background-color: #1e293b;
+}
+
 .post-btn {
   background-color: #1d9bf0;
   color: #ffffff;
@@ -1066,35 +1112,35 @@ body {
 /* Responsive design */
 @media (max-width: 1024px) {
   .sidebar {
-    width: 80px;
+    width: 275px;
   }
   
   .sidebar-content {
-    padding: 0 12px;
+    padding: 20px 0;
   }
   
   .nav-item span {
-    display: none;
+    display: block;
   }
   
   .user-profile {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 12px;
   }
   
   .user-details {
-    display: none;
+    display: block;
   }
   
   .main-content {
-    margin-left: 80px;
+    margin-left: 275px;
   }
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    display: none;
+    display: block;
   }
   
   .main-content {
@@ -1102,11 +1148,11 @@ body {
   }
   
   .search-bar {
-    display: none;
+    display: block;
   }
   
   .header-actions {
-    gap: 8px;
+    gap: 16px;
   }
   
   .post-btn span {
