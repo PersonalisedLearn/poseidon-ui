@@ -3,8 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Calendar, MapPin, Link as LinkIcon, Edit } from 'lucide-react';
 import axios from 'axios';
 import Post from './Post';
-
-const API_BASE_URL = 'http://localhost:8080/api';
+import { API_BASE_URL } from '../config';
 
 const Profile = () => {
   const { username } = useParams();
