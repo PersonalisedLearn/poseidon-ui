@@ -155,24 +155,24 @@ const CreatePost = ({ currentUser, onAddPost, onClose }) => {
                 )}
               </div>
             </div>
-          </div>
-
-          <div className="submit-actions">
-            <button 
-              type="button" 
-              onClick={onClose} 
-              className="cancel-btn"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              className={`post-submit-btn ${(!content.trim() || isSubmitting) ? 'disabled' : ''}`}
-              disabled={!content.trim() || isSubmitting}
-            >
-              {isSubmitting ? 'Posting...' : 'Post'}
-            </button>
+            
+            <div className="submit-actions">
+              <button 
+                type="button" 
+                onClick={onClose} 
+                className="cancel-btn"
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                className={`post-submit-btn ${(!content.trim() || isSubmitting) ? 'disabled' : ''}`}
+                disabled={!content.trim() || isSubmitting}
+              >
+                {isSubmitting ? 'Posting...' : 'Post'}
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -265,18 +265,75 @@ const styles = `
     background-color: rgba(29, 155, 240, 0.1);
   }
   
+  .create-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid #2f3336;
+  }
+  
+  .create-post-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  .create-post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 16px;
+    border-top: 1px solid #2f3336;
+    min-height: 40px;
+  }
+  
+  .media-options {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  
   .submit-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 16px;
-    border-top: 1px solid #2f3336;
-    margin-top: 12px;
+    gap: 8px;
+    margin-left: auto;
+  }
+  
+  .cancel-btn, .post-input-area {
+    padding: 8px 16px;
+  }
+  
+  .create-post-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+  }
+  
+  .post-textarea-container {
+    flex: 1;
+  }
+  
+  .post-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #e7e9ea;
+    font-size: 15px;
+    resize: none;
+    padding: 8px 0;
+    min-height: 100px;
+  }
+  
+  .post-textarea:focus {
+    outline: none;
   }
   
   .cancel-btn, .post-submit-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
+    padding: 6px 12px;
+    border-radius: 16px;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
