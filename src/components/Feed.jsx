@@ -113,7 +113,14 @@ const Feed = () => {
   }, [currentUser]);
 
   if (loading) {
-    return <div className="loading">Loading posts...</div>;
+    return (
+      <div className="loading-container">
+        <div className="loading-content">
+          <div className="loading-spinner"></div>
+          <p>Loading posts...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
