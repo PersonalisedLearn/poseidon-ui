@@ -9,7 +9,17 @@ const Post = ({ post, currentUser, onLike }) => {
     console.error('Post is undefined or null');
     return null; // or a loading/error state
   }
-  const handleLike = () => {
+  const handleLike = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Only allow liking if there's a current user
+    if (!currentUser?.username) {
+      // You could show a login prompt here
+      console.log('Please log in to like posts');
+      return;
+    }
+    
     onLike(post.id);
   };
 
@@ -88,11 +98,13 @@ const Post = ({ post, currentUser, onLike }) => {
 
       <div className="post-actions">
         <button 
-          className={`action-btn like-btn ${post.likedByCurrentUser ? 'liked' : ''}`}
+          className={`action-btn like-btn ${post.liked ? 'liked' : ''} ${!currentUser?.username ? 'disabled' : ''}`}
           onClick={handleLike}
+          aria-label={post.liked ? 'Unlike this post' : 'Like this post'}
+          disabled={!currentUser?.username}
         >
-          <Heart size={20} fill={post.likedByCurrentUser ? 'currentColor' : 'none'} />
-          <span>{post.likesCount || 0}</span>
+          <Heart size={20} fill={post.liked ? 'currentColor' : 'none'} />
+          <span>{post.likes > 0 ? post.likes : ''}</span>
         </button>
         
         <button className="action-btn comment-btn">
