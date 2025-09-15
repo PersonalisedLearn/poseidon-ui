@@ -59,7 +59,7 @@ const Settings = () => {
           <p>This will permanently delete your account and all associated data. This action cannot be undone.</p>
           
           <div className="delete-confirm">
-            <p>To confirm, please type <strong>delete my account</strong> below:</p>
+            <p>To confirm, please type <strong>"delete my account"</strong> below:</p>
             <input
               type="text"
               value={deleteConfirm}
